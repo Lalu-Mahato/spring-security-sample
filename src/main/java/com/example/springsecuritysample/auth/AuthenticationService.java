@@ -1,8 +1,11 @@
 package com.example.springsecuritysample.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,42 +32,52 @@ public class AuthenticationService {
         @Autowired
         private AuthenticationManager authenticationManager;
 
-        public RegistrationResponse register(RegisterUserDto registerUserDto) {
-                var user = User.builder()
-                                .firstname(registerUserDto.getFirstname())
-                                .lastname(registerUserDto.getLastname())
-                                .email(registerUserDto.getEmail())
-                                .password(passwordEncoder.encode(registerUserDto.getPassword()))
-                                .role(registerUserDto.getRole())
-                                .build();
+        public ResponseEntity<Object> register(RegisterUserDto registerUserDto) {
+                try {
+                        var user = User.builder()
+                                        .firstname(registerUserDto.getFirstname())
+                                        .lastname(registerUserDto.getLastname())
+                                        .email(registerUserDto.getEmail())
+                                        .password(passwordEncoder.encode(registerUserDto.getPassword()))
+                                        .role(registerUserDto.getRole())
+                                        .build();
 
-                userRepository.save(user);
-                return RegistrationResponse.builder()
-                                .id(user.getId())
-                                .firstname(user.getFirstname())
-                                .lastname(user.getLastname())
-                                .email(user.getEmail())
-                                .role(user.getRole())
-                                .build();
+                        userRepository.save(user);
+                        RegistrationResponse response = RegistrationResponse.builder()
+                                        .id(user.getId())
+                                        .firstname(user.getFirstname())
+                                        .lastname(user.getLastname())
+                                        .email(user.getEmail())
+                                        .role(user.getRole())
+                                        .build();
+
+                        return new ResponseEntity<>(response, HttpStatus.CREATED);
+                } catch (Exception e) {
+                        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                }
         }
 
-        public LoginResponse authenticate(LoginUserDto loginUserDto) {
-                authenticationManager.authenticate(
-                                new UsernamePasswordAuthenticationToken(
-                                                loginUserDto.getEmail(), loginUserDto.getPassword()));
+        public ResponseEntity<Object> authenticate(LoginUserDto loginUserDto) {
+                try {
+                        authenticationManager.authenticate(
+                                        new UsernamePasswordAuthenticationToken(
+                                                        loginUserDto.getEmail(), loginUserDto.getPassword()));
 
-                var user = userRepository.findByEmail(loginUserDto.getEmail())
-                                .orElseThrow();
-                var token = jwtService.generateToken(user);
+                        var user = userRepository.findByEmail(loginUserDto.getEmail())
+                                        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                        var token = jwtService.generateToken(user);
 
-                return LoginResponse.builder()
-                                .id(user.getId())
-                                .firstname(user.getFirstname())
-                                .lastname(user.getLastname())
-                                .email(user.getEmail())
-                                .role(user.getRole())
-                                .token(token)
-                                .build();
+                        LoginResponse response = LoginResponse.builder()
+                                        .id(user.getId())
+                                        .firstname(user.getFirstname())
+                                        .lastname(user.getLastname())
+                                        .email(user.getEmail())
+                                        .role(user.getRole())
+                                        .token(token)
+                                        .build();
+                        return ResponseEntity.ok(response);
+                } catch (Exception e) {
+                        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+                }
         }
-
 }
