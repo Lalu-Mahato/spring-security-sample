@@ -7,6 +7,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+import com.example.springsecuritysample.auth.dto.ErrorResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,8 +21,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        PrintWriter writer = response.getWriter();
-        writer.println("Access Denied !! " + authException.getMessage());
-    }
 
+        ErrorResponse errorResponse = new ErrorResponse(
+                "Access Denied!!!" + authException.getMessage(),
+                "UNAUTHORIZED",
+                401);
+
+        PrintWriter writer = response.getWriter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        writer.println(objectMapper.writeValueAsString(errorResponse));
+    }
 }
