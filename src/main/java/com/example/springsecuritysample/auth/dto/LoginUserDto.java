@@ -1,4 +1,4 @@
-package com.example.springsecuritysample.auth;
+package com.example.springsecuritysample.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
-
+@AllArgsConstructor
+public class LoginUserDto {
     private String email;
     String password;
 }

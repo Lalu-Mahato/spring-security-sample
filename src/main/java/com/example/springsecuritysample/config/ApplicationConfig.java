@@ -1,4 +1,4 @@
-package com.example.springsecuritysample.auth;
+package com.example.springsecuritysample.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

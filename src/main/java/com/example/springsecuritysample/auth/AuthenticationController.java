@@ -8,6 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.springsecuritysample.auth.dto.LoginResponse;
+import com.example.springsecuritysample.auth.dto.LoginUserDto;
+import com.example.springsecuritysample.auth.dto.RegisterUserDto;
+import com.example.springsecuritysample.auth.dto.RegistrationResponse;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
@@ -16,13 +21,13 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authenticationService.register(registerRequest));
+    public ResponseEntity<RegistrationResponse> register(@RequestBody RegisterUserDto registerUserDto) {
+        return ResponseEntity.ok(authenticationService.register(registerUserDto));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login() {
-        return authenticationService.authenticate();
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginUserDto loginUserDto) {
+        return ResponseEntity.ok(authenticationService.authenticate(loginUserDto));
     }
 
 }
