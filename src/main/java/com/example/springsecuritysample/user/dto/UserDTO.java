@@ -1,16 +1,13 @@
-package com.example.springsecuritysample.auth.dto;
+package com.example.springsecuritysample.user.dto;
 
 import java.util.Date;
 
 import com.example.springsecuritysample.user.Role;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
-public class RegistrationResponse {
-    private Integer id;
+public class UserDTO {
     private String firstname;
     private String lastname;
     private String email;

@@ -1,5 +1,7 @@
 package com.example.springsecuritysample.auth.dto;
 
+import java.util.Date;
+
 import com.example.springsecuritysample.user.Role;
 
 import lombok.Builder;
@@ -13,5 +15,8 @@ public class LoginResponse {
     private String lastname;
     private String email;
     private Role role;
+    private boolean status;
     private String token;
+    private Date createdAt;
+    private Date updatedAt;
 }

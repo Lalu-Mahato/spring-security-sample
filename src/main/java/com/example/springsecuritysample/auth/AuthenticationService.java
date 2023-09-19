@@ -49,6 +49,9 @@ public class AuthenticationService {
                                         .lastname(user.getLastname())
                                         .email(user.getEmail())
                                         .role(user.getRole())
+                                        .status(user.isStatus())
+                                        .createdAt(user.getCreatedAt())
+                                        .updatedAt(user.getUpdatedAt())
                                         .build();
 
                         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -73,7 +76,10 @@ public class AuthenticationService {
                                         .lastname(user.getLastname())
                                         .email(user.getEmail())
                                         .role(user.getRole())
+                                        .status(user.isStatus())
                                         .token(token)
+                                        .createdAt(user.getCreatedAt())
+                                        .updatedAt(user.getUpdatedAt())
                                         .build();
                         return ResponseEntity.ok(response);
                 } catch (Exception e) {
